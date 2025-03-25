@@ -1,0 +1,5 @@
+describe("foundations", function()
+	it("can be required", function()
+		require("foundations")
+	end)
+end)
