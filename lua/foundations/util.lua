@@ -100,4 +100,17 @@ M.file_from_template = function(template_path, file_path)
 	local contents = M.read_file(template_path)
 	M.write_file(file_path, contents)
 end
+
+M.apply_replacements = function(file_path) end
+
+-- Replaces all registered standins in contents with the result of calling their associated function
+-- Order of operations is determined by priority
+-- {{__cursor__}} is always processed last
+M.replace_standins = function(contents)
+	for replacing, replace_spec in pairs(require("foundations")._configs.replacements) do
+		local from = replace_spec.from
+		local to = replace_spec.to
+	end
+	return contents
+end
 return M
