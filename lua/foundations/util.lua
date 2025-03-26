@@ -53,6 +53,30 @@ M.get_templates = function(path)
 	return templates
 end
 
+M.get_info = function(callafter, opts)
+	opts = opts or {}
+	local buf, win = M.float(opts)
+	vim.cmd("startinsert")
+	vim.keymap.set("i", "<CR>", function()
+		local line = getline()
+		vim.cmd("stopinsert")
+		print(line)
+		callafter(line, opts)
+		vim.api.nvim_win_close(win, false)
+	end, { buffer = true })
+	vim.keymap.set("i", "<ESC>", function()
+		vim.cmd("stopinsert")
+		vim.api.nvim_win_close(win, true)
+	end, { buffer = true })
+	vim.api.nvim_create_autocmd({ "TextChangedI" }, {
+		buffer = buf,
+		desc = "Updates the list of templates.",
+		callback = function()
+			local match_on = getline()
+			print(match_on)
+		end,
+	})
+end
 -- Reads the value of contents from the file at file_path
 M.read_file = function(file_path)
 	local fd = assert(vim.uv.fs_open(file_path, "r", 438))
