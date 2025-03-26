@@ -40,6 +40,19 @@ M.float = function(opts)
 	return buf, win
 end
 
+M.get_templates = function(path)
+	local templates = {}
+	local entries = vim.fs.dir(path, { depth = 5 })
+	for entry in entries do
+		if vim.filetype.match({ filename = entry }) == nil then
+			templates = vim.tbl_extend("keep", templates, M.get_templates(path .. "/" .. entry))
+		else
+			table.insert(templates, path .. "/" .. entry)
+		end
+	end
+	return templates
+end
+
 -- Reads the value of contents from the file at file_path
 M.read_file = function(file_path)
 	local fd = assert(vim.uv.fs_open(file_path, "r", 438))
