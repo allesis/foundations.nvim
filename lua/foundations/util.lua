@@ -1,3 +1,6 @@
+local getline = function()
+	return vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]
+end
 local M = {}
 
 M._state = {
@@ -9,8 +12,8 @@ M._state = {
 
 M.float = function(opts)
 	opts = opts or {}
-	local width = opts.width or math.floor(vim.o.columns * 0.8)
-	local height = opts.height or math.floor(vim.o.lines * 0.8)
+	local width = opts.width or math.floor(vim.o.columns * 0.15)
+	local height = opts.height or math.floor(vim.o.lines * 0.15)
 
 	local col = math.floor((vim.o.columns - width) / 2)
 	local row = math.floor((vim.o.lines - height) / 2)
@@ -18,13 +21,15 @@ M.float = function(opts)
 	local buf = vim.api.nvim_create_buf(false, true)
 
 	local win_config = {
-		relative = "editor",
+		relative = opts.relative or "editor",
 		width = width,
 		height = height,
 		col = col,
 		row = row,
-		style = "minimal",
-		border = "rounded",
+		style = opts.style or "minimal",
+		border = opts.border or "rounded",
+		title = opts.title or "",
+		title_pos = opts.title_pos or "center",
 	}
 
 	local win = vim.api.nvim_open_win(buf, true, win_config)
