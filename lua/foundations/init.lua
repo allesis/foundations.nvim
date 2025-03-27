@@ -21,6 +21,9 @@ M._configs = {
 			end,
 		},
 	},
+	intro = function()
+		vim.cmd.intro()
+	end,
 }
 M.config = function(config)
 	if config ~= nil and config.path ~= nil then
