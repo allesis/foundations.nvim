@@ -17,9 +17,7 @@ vim.api.nvim_create_user_command("Foundations", function(opts)
 	for token in string.gmatch(opts.args, "[^%s]+") do
 		table.insert(args, token)
 	end
-	for _, arg in pairs(args) do
-		commands_functions[arg]()
-	end
+	commands_functions[args[1]](args[2], opts)
 end, {
 	nargs = 1,
 	complete = function(ArgLead, CmdLine, CursorPos)
@@ -29,9 +27,6 @@ end, {
 		end
 		-- args.1 is "Foundations", and will always be, just remove it
 		_ = table.remove(args, 1)
-		vim.api.nvim_err_writeln("LEN " .. vim.tbl_count(args) .. "")
-		vim.api.nvim_err_writeln("ARGLEAD " .. ArgLead)
-		vim.api.nvim_err_writeln("ARGLEAD size " .. string.len(ArgLead))
 		local args_count = vim.tbl_count(args)
 		if args_count >= 3 then
 			return {}
@@ -41,9 +36,6 @@ end, {
 			return {}
 		elseif args_count == 2 or (args_count == 1 and string.len(ArgLead) == 0) then
 			return vim.tbl_filter(function(a)
-				vim.api.nvim_err_writeln(
-					vim.inspect(require("foundations.util").get_templates(require("foundations")._configs.path))
-				)
 				return string.match(a, ArgLead) ~= nil
 			end, require("foundations.util").get_templates(require("foundations")._configs.path))
 		else
