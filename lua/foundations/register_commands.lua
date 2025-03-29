@@ -11,7 +11,7 @@ local commands_functions = {
 }
 
 vim.api.nvim_create_user_command("Foundations", function(opts)
-	opts = opts or "~/.template"
+	opts = opts or require("foundations")._configs.path
 	local args = {}
 
 	for token in string.gmatch(opts.args, "[^%s]+") do
