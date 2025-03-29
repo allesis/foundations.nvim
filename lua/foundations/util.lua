@@ -1,6 +1,10 @@
 local M = {}
 local config_path = require("foundations")._configs.path
 
+local getline = function()
+	return vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]
+end
+
 M.float = function(opts)
 	opts = opts or {}
 	local width = opts.width or math.floor(vim.o.columns * 0.25)
