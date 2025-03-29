@@ -43,7 +43,19 @@ M.get_templates = function(path)
 	return templates
 end
 
-M.get_info = function(callafter, opts)
+M.get_dirs = function(path)
+	path = path or config_path
+	local dirs = { path .. "/" }
+	local entries = vim.fs.dir(path, { depth = 0 })
+	for entry in entries do
+		local entry_path = config_path .. "/" .. entry
+		local filetype = vim.uv.fs_stat(vim.fs.normalize(entry_path)).type
+		if filetype == "directory" then
+			table.insert(dirs, entry_path .. "/")
+		end
+	end
+	return dirs
+end
 -- Function takes a callafter function and opts
 -- Opts are used in the function but must contain all args to be passed to callafter
 -- Callafter is a function with the signature function(callafter, opts)
