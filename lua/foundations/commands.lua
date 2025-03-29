@@ -5,25 +5,6 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local util = require("foundations.util")
 local M = {}
-local edit_template = function(template_path)
-	local oldbuf = vim.api.nvim_get_current_buf()
-	--TODO: This will break on specific paths, e.g. leading ~ or /
-	template_path = vim.fs.normalize(template_path)
-	vim.cmd.e(template_path)
-	local newbuf = vim.api.nvim_get_current_buf()
-	vim.api.nvim_create_autocmd({ "BufWritePost", "FileWritePost" }, {
-		buffer = newbuf,
-		desc = "Return to previous buffer after exiting a template edit buffer.",
-		callback = function()
-			if vim.api.nvim_buf_is_valid(oldbuf) then
-				vim.api.nvim_set_current_buf(oldbuf)
-			else
-				require("foundations")._configs.intro()
-			end
-			vim.api.nvim_buf_delete(newbuf, { force = true })
-		end,
-	})
-end
 M.new_template = function(opts)
 	opts = opts or {}
 	local path = opts.path or nil
@@ -50,7 +31,7 @@ M.new_template = function(opts)
 						opts.callback
 							or function(template_name, o)
 								-- CHECK: Confirm this acts like edit when the file already exists
-								edit_template(o.template_path .. "/" .. template_name)
+								util.edit_template(o.template_path .. "/" .. template_name)
 							end,
 						vim.tbl_deep_extend("keep", opts, { template_path = template_path, title = "Template Name" })
 					)
@@ -83,7 +64,7 @@ M.edit_template = function(opts)
 				actions.select_default:replace(opts.callback or function()
 					actions.close(prompt_bufnr)
 					local template_path = action_state.get_selected_entry().value
-					edit_template(template_path)
+					util.edit_template(template_path)
 				end)
 				return true
 			end,

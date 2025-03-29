@@ -86,6 +86,26 @@ M.get_name = function(callafter, opts)
 	end, { buffer = true })
 end
 
+M.edit_template = function(template_path)
+	local oldbuf = vim.api.nvim_get_current_buf()
+	--TODO: This will break on specific paths, e.g. leading ~ or /
+	template_path = vim.fs.normalize(template_path)
+	vim.cmd.e(template_path)
+	local newbuf = vim.api.nvim_get_current_buf()
+	vim.api.nvim_create_autocmd({ "BufWritePost", "FileWritePost" }, {
+		buffer = newbuf,
+		desc = "Return to previous buffer after exiting a template edit buffer.",
+		callback = function()
+			if vim.api.nvim_buf_is_valid(oldbuf) then
+				vim.api.nvim_set_current_buf(oldbuf)
+			else
+				require("foundations")._configs.intro()
+			end
+			vim.api.nvim_buf_delete(newbuf, { force = true })
+		end,
+	})
+end
+
 -- Reads the value of contents from the file at file_path
 M.read_file = function(file_path)
 	local fd = assert(vim.uv.fs_open(file_path, "r", 438))
