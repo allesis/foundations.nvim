@@ -27,10 +27,6 @@ M.float = function(opts)
 	}
 
 	local win = vim.api.nvim_open_win(buf, true, win_config)
-	M._state.floating = {
-		buf = buf,
-		win = win,
-	}
 	return buf, win
 end
 
