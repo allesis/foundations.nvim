@@ -21,6 +21,7 @@ M._configs = {
 			end,
 		},
 	},
+	-- TODO: Add options to use startify and dashboard
 	intro = function()
 		vim.cmd.intro()
 	end,
@@ -35,5 +36,7 @@ M.setup = function(config)
 	require("foundations.register_commands")
 	M._templates = require("foundations.util").get_templates(M._configs.path)
 end
+
+--require("telescope").load_extension("foundations")
 
 return M
