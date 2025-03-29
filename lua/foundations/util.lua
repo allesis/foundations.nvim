@@ -48,10 +48,12 @@ M.get_dirs = function(path)
 	local dirs = { path .. "/" }
 	local entries = vim.fs.dir(path, { depth = 0 })
 	for entry in entries do
-		local entry_path = config_path .. "/" .. entry
+		local entry_path = path .. "/" .. entry
 		local filetype = vim.uv.fs_stat(vim.fs.normalize(entry_path)).type
 		if filetype == "directory" then
-			table.insert(dirs, entry_path .. "/")
+			for _, subdir in pairs(M.get_dirs(entry_path)) do
+				table.insert(dirs, subdir)
+			end
 		end
 	end
 	return dirs
