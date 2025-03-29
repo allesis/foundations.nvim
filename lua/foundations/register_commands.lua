@@ -1,13 +1,13 @@
 local commands = require("foundations.commands")
 local command_names = {
-	"FromTemplate",
-	"NewTemplate",
-	"EditTemplate",
+	"from_template",
+	"new_template",
+	"edit_template",
 }
 local commands_functions = {
-	["NewTemplate"] = commands.new_template,
-	["FromTemplate"] = commands.from_template,
-	["EditTemplate"] = commands.edit_template,
+	["new_template"] = commands.new_template,
+	["from_template"] = commands.from_template,
+	["edit_template"] = commands.edit_template,
 }
 
 vim.api.nvim_create_user_command("Foundations", function(opts)
