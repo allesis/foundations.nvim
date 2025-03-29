@@ -15,10 +15,10 @@ M.title = {
 		return vim.fs.basename(vim.api.nvim_buf_get_name(0))
 	end,
 }
-M.fulldate = {
-	from = "{{__fulldate__}}",
+M.time = {
+	from = "{{__time__}}",
 	to = function()
-		return vim.cmd('!date +"%A the %d  of %B, %Y"')
+		return vim.uv.clock_gettime()
 	end,
 }
 M.path = {
