@@ -108,6 +108,7 @@ M.replace_standins = function(contents)
 	for replacing, replace_spec in pairs(require("foundations")._configs.replacements) do
 		local from = replace_spec.from
 		local to = replace_spec.to
+		contents = string.gsub(contents, from, to)
 	end
 	return contents
 end
