@@ -44,29 +44,30 @@ M.get_templates = function(path)
 end
 
 M.get_info = function(callafter, opts)
+-- Function takes a callafter function and opts
+-- Opts are used in the function but must contain all args to be passed to callafter
+-- Callafter is a function with the signature function(callafter, opts)
+-- To escape this hope pass a callafter function which calls a function which does not align to this signature
+M.get_name = function(callafter, opts)
 	opts = opts or {}
 	local buf, win = M.float(opts)
 	vim.cmd("startinsert")
 	vim.keymap.set("i", "<CR>", function()
-		local line = getline()
+		local path = getline()
 		vim.cmd("stopinsert")
-		print(line)
-		callafter(line, opts)
 		vim.api.nvim_win_close(win, false)
+		-- FIX: This can wipeout a pre-existing file
+		if (not opts.editing) or assert(vim.uv.fs_stat(path)) then
+			callafter(path, opts)
+		end
 	end, { buffer = true })
-	vim.keymap.set("i", "<ESC>", function()
+	vim.keymap.set("i", ":", "<ESC>:", { buffer = true })
+	vim.keymap.set({ "i", "n" }, "<ESC>", function()
 		vim.cmd("stopinsert")
 		vim.api.nvim_win_close(win, true)
 	end, { buffer = true })
-	vim.api.nvim_create_autocmd({ "TextChangedI" }, {
-		buffer = buf,
-		desc = "Updates the list of templates.",
-		callback = function()
-			local match_on = getline()
-			print(match_on)
-		end,
-	})
 end
+
 -- Reads the value of contents from the file at file_path
 M.read_file = function(file_path)
 	local fd = assert(vim.uv.fs_open(file_path, "r", 438))
