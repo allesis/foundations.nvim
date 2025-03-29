@@ -31,11 +31,15 @@ M.float = function(opts)
 end
 
 M.get_templates = function(path)
+	path = path or config_path
 	local templates = {}
-	local entries = vim.fs.dir(path, { depth = 5 })
+	local entries = vim.fs.dir(path, { depth = 0 })
 	for entry in entries do
-		if vim.filetype.match({ filename = entry }) == nil then
-			templates = vim.tbl_extend("keep", templates, M.get_templates(path .. "/" .. entry))
+		local filetype = vim.uv.fs_stat(vim.fs.normalize(path .. "/" .. entry)).type
+		if filetype == "directory" then
+			for _, template in pairs(M.get_templates(path .. "/" .. entry)) do
+				table.insert(templates, template)
+			end
 		else
 			table.insert(templates, path .. "/" .. entry)
 		end
