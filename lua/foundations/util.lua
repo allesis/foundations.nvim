@@ -87,8 +87,16 @@ end
 
 -- Creates a new file with contents equal to the file at template_path and saves it at file_path
 M.file_from_template = function(template_path, file_path)
+	template_path = vim.fs.normalize(template_path)
+	file_path = vim.fs.normalize(file_path)
 	local contents = M.read_file(template_path)
+	contents = M.replace_standins(contents, file_info)
 	M.write_file(file_path, contents)
+	-- PERF: This edit is very slow for no reason
+	-- 	 I've tried profiling a bit but no obvious reasons for bad perf
+	-- 	 It's gotten better own its own for some reason but is still slow
+	-- FIX:  Make this faster. Waiting a half second for a file to open is annoying
+	vim.cmd.e(file_path)
 end
 
 M.apply_replacements = function(file_path) end
