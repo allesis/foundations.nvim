@@ -7,20 +7,7 @@ local M = {}
 M._templates = {}
 M._configs = {
 	path = "~/.config/nvim/templates",
-	replacements = {
-		title = {
-			from = "{{__title__}}",
-			to = function()
-				return vim.api.nvim_buf_get_name(0)
-			end,
-		},
-		time = {
-			from = "{{__time__}}",
-			to = function()
-				return vim.uv.clock_gettime()
-			end,
-		},
-	},
+	replacements = require("foundations.replacements"),
 	-- TODO: Add options to use startify and dashboard
 	intro = function()
 		vim.cmd.intro()
@@ -36,7 +23,5 @@ M.setup = function(config)
 	require("foundations.register_commands")
 	M._templates = require("foundations.util").get_templates(M._configs.path)
 end
-
---require("telescope").load_extension("foundations")
 
 return M
