@@ -26,6 +26,34 @@ local edit_template = function(template_path)
 end
 M.new_template = function(opts)
 	opts = opts or {}
+	pickers
+		.new(opts, {
+			prompt_title = "colors",
+			finder = finders.new_table({
+				results = util.get_dirs,
+				entry_maker = function(entry)
+					return {
+						value = entry,
+						display = entry,
+						ordinal = vim.fs.normalize(entry),
+					}
+				end,
+			}),
+			sorter = conf.file_sorter(opts),
+			attach_mappings = function(prompt_bufnr, map)
+				actions.select_default:replace(function()
+					actions.close(prompt_bufnr)
+					local template_path = action_state.get_selected_entry().value
+					util.get_name(function(template_name, o)
+						edit_template(o.template_path .. "/" .. template_name)
+					end, { template_path = template_path })
+				end)
+				return true
+			end,
+		})
+		:find()
+end
+
 M.edit_template = function(opts)
 	opts = opts or {}
 end
