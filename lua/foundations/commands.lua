@@ -63,7 +63,34 @@ end
 
 M.edit_template = function(opts)
 	opts = opts or {}
+	local finder = finders.new_table({
+		results = util.get_templates(),
+		entry_maker = function(entry)
+			return {
+				value = entry,
+				display = entry,
+				ordinal = vim.fs.normalize(entry),
+			}
+		end,
+	})
+
+	pickers
+		.new(opts, {
+			prompt_title = "Edit Template",
+			finder = finder,
+			sorter = conf.file_sorter(opts),
+			attach_mappings = function(prompt_bufnr, map)
+				actions.select_default:replace(opts.callback or function()
+					actions.close(prompt_bufnr)
+					local template_path = action_state.get_selected_entry().value
+					edit_template(template_path)
+				end)
+				return true
+			end,
+		})
+		:find()
 end
+
 M.from_template = function(opts)
 	opts = opts or {}
 end
