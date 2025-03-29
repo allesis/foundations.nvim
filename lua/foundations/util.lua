@@ -151,4 +151,27 @@ M.replace_standins = function(contents)
 	end
 	return contents
 end
+
+M.get_project_root = function(path)
+	local strategy = require("foundations")._configs.root_strategy
+	local markers = require("foundations")._configs.markers
+
+	local lsp = vim.lsp.get_clients({ buffer = 0 })[1] or {}
+	if vim.tbl_contains({ "all", "lsp" }, strategy) and lsp.root_dir then
+		return lsp.root_dir
+	end
+	if vim.tbl_contains({ "all", "git" }, strategy) then
+		local resp = vim.api.nvim_exec2("!git rev-parse --show-toplevel", { output = true }).output
+		if resp ~= "fatal: not a git repository (or any of the parent directories): .git" and resp then
+			return resp
+		end
+	end
+	if vim.tbl_contains({ "all", "markers" }, strategy) and markers then
+		local root = vim.fs.root(path, markers)
+		if root then
+			return root
+		end
+	end
+	return vim.fs.dirname(path)
+end
 return M
