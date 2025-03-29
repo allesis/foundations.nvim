@@ -108,6 +108,9 @@ M.from_template = function(opts)
 					opts.title = "New File Name"
 					opts.prompt_title = "New File Path"
 					opts.path = util.get_project_root(vim.api.nvim_buf_get_name(0))
+					if opts.path == "/" or opts.path == "" or not opts.path or string.sub(opts.path, 1, 1) ~= "/" then
+						opts.path = vim.fn.getcwd()
+					end
 					opts.callback = function(file_name, o)
 						util.file_from_template(o.from_template_path, o.template_path .. "/" .. file_name)
 					end
