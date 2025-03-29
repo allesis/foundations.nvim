@@ -26,27 +26,34 @@ local edit_template = function(template_path)
 end
 M.new_template = function(opts)
 	opts = opts or {}
+	local path = opts.path or nil
+	local finder = finders.new_table({
+		results = util.get_dirs(path),
+		entry_maker = function(entry)
+			return {
+				value = entry,
+				display = entry,
+				ordinal = vim.fs.normalize(entry),
+			}
+		end,
+	})
 	pickers
 		.new(opts, {
-			prompt_title = "colors",
-			finder = finders.new_table({
-				results = util.get_dirs,
-				entry_maker = function(entry)
-					return {
-						value = entry,
-						display = entry,
-						ordinal = vim.fs.normalize(entry),
-					}
-				end,
-			}),
+			prompt_title = "New Template Path",
+			finder = finder,
 			sorter = conf.file_sorter(opts),
 			attach_mappings = function(prompt_bufnr, map)
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
 					local template_path = action_state.get_selected_entry().value
-					util.get_name(function(template_name, o)
-						edit_template(o.template_path .. "/" .. template_name)
-					end, { template_path = template_path })
+					util.get_name(
+						opts.callback
+							or function(template_name, o)
+								-- CHECK: Confirm this acts like edit when the file already exists
+								edit_template(o.template_path .. "/" .. template_name)
+							end,
+						vim.tbl_deep_extend("keep", opts, { template_path = template_path, title = "Template Name" })
+					)
 				end)
 				return true
 			end,
