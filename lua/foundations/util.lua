@@ -6,8 +6,8 @@ end
 
 M.float = function(opts)
 	opts = opts or {}
-	local width = opts.width or math.floor(vim.o.columns * 0.15)
-	local height = opts.height or math.floor(vim.o.lines * 0.15)
+	local width = opts.width or math.floor(vim.o.columns * 0.25)
+	local height = opts.height or 1
 
 	local col = math.floor((vim.o.columns - width) / 2)
 	local row = math.floor((vim.o.lines - height) / 2)
@@ -32,8 +32,12 @@ end
 M.get_templates = function(path)
 	path = path or config_path
 	local templates = {}
+	local ignore_dirs = require("foundations")._configs.ignore_dirs or {}
 	local entries = vim.fs.dir(path, { depth = 0 })
 	for entry in entries do
+		if vim.tbl_contains(ignore_dirs, entry) then
+			goto continue
+		end
 		local filetype = vim.uv.fs_stat(vim.fs.normalize(path .. "/" .. entry)).type
 		if filetype == "directory" then
 			for _, template in pairs(M.get_templates(path .. "/" .. entry)) do
@@ -42,6 +46,7 @@ M.get_templates = function(path)
 		else
 			table.insert(templates, path .. "/" .. entry)
 		end
+		::continue::
 	end
 	return templates
 end
@@ -49,8 +54,12 @@ end
 M.get_dirs = function(path)
 	path = path or config_path
 	local dirs = { path .. "/" }
+	local ignore_dirs = require("foundations")._configs.ignore_dirs or {}
 	local entries = vim.fs.dir(path, { depth = 0 })
 	for entry in entries do
+		if vim.tbl_contains(ignore_dirs, entry) then
+			goto continue
+		end
 		local entry_path = path .. "/" .. entry
 		local filetype = vim.uv.fs_stat(vim.fs.normalize(entry_path)).type
 		if filetype == "directory" then
@@ -58,6 +67,7 @@ M.get_dirs = function(path)
 				table.insert(dirs, subdir)
 			end
 		end
+		::continue::
 	end
 	return dirs
 end
@@ -145,8 +155,8 @@ M.apply_replacements = function(file_path) end
 -- {{__cursor__}} is always processed last
 M.replace_standins = function(contents)
 	for replacing, replace_spec in pairs(require("foundations")._configs.replacements) do
-		local from = replace_spec.from
-		local to = replace_spec.to
+		local from, opt = string.gmatch(contents, replace_spec.from)()
+		local to = replace_spec.to(opt)
 		contents = string.gsub(contents, from, to)
 	end
 	return contents
