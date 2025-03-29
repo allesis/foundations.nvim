@@ -12,6 +12,9 @@ M._configs = {
 	intro = function()
 		vim.cmd.intro()
 	end,
+	markers = {},
+	-- Valid strategies are: all, markers, git, lsp
+	root_strategy = "all",
 }
 M.config = function(config)
 	if config ~= nil and config.path ~= nil then
