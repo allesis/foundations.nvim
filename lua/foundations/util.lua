@@ -25,25 +25,6 @@ M.float = function(opts)
 		title = opts.title or "",
 		title_pos = opts.title_pos or "center",
 	}
-
-	--[[
-	-- Setup tab complete autocommands
-	vim.api.nvim_buf_set_keymap(
-		buf,
-		"i",
-		"<Tab>",
-		"lua require('foundations.util')._state.selected_line = M._state.selected_line + 1",
-		{}
-	)
-	vim.api.nvim_buf_set_keymap(
-		buf,
-		"i",
-		"<Shift-Tab>",
-		"lua require('foundations.util')._state.selected_line = M._state.selected_line - 1",
-		{}
-	)
-	]]
-	--
 	local win = vim.api.nvim_open_win(buf, true, win_config)
 	return buf, win
 end
@@ -79,23 +60,6 @@ M.get_dirs = function(path)
 		end
 	end
 	return dirs
-end
-
-M.get_entries = function(path)
-	path = path or config_path
-	local entries_iter = vim.fs.dir(path, { depth = 0 })
-	local entries = {}
-	for entry in entries_iter do
-		local entry_path = config_path .. "/" .. entry
-		table.insert(entries, entry_path .. "/")
-	end
-	local entry_count = vim.tbl_count(entries)
-	if entry_count == 0 then
-		return { path }
-	elseif entry_count == 1 then
-		return M.get_entries(entries[1])
-	end
-	return entries
 end
 
 -- Function takes a callafter function and opts
