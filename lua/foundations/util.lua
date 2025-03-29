@@ -140,7 +140,7 @@ M.file_from_template = function(template_path, file_path)
 	template_path = vim.fs.normalize(template_path)
 	file_path = vim.fs.normalize(file_path)
 	local contents = M.read_file(template_path)
-	contents = M.replace_standins(contents, file_info)
+	contents = M.replace_standins(contents)
 	M.write_file(file_path, contents)
 	-- PERF: This edit is very slow for no reason
 	-- 	 I've tried profiling a bit but no obvious reasons for bad perf
@@ -155,10 +155,16 @@ M.apply_replacements = function(file_path) end
 -- Order of operations is determined by priority
 -- {{__cursor__}} is always processed last
 M.replace_standins = function(contents)
-	for replacing, replace_spec in pairs(require("foundations")._configs.replacements) do
-		local from, opt = string.gmatch(contents, replace_spec.from)()
-		local to = replace_spec.to(opt)
-		contents = string.gsub(contents, from, to)
+	local replacements = require("foundations")._configs.replacements
+	for _, replace_spec in pairs(replacements) do
+		local post_create = replace_spec.post_create or false
+		if not post_create then
+			local from = string.match(contents, replace_spec.from)
+			if from then
+				local to = replace_spec.to(from)
+				contents = string.gsub(contents, from, to)
+			end
+		end
 	end
 	return contents
 end
