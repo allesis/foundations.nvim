@@ -151,5 +151,13 @@ O.neorg_tangle = {
 		end)
 	end,
 }
+O.neorg_tangle_pick_file = {
+	from = "{{__neorg__tangle__pick__file__}}",
+	to = function()
+		perform_replacement(O.neorg_inject_metadata.from, function()
+			run_neorg_command("tangle")
+		end)
+	end,
+}
 
 return { M, N, O }
