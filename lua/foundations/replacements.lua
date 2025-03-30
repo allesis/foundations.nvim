@@ -13,6 +13,13 @@ M.date = {
 		return string.sub(res, 10, -2)
 	end,
 }
+M.simple_date = {
+	from = "{{__simpledate__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%D"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
 
 M.title = {
 	from = "{{__title__}}",
