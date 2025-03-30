@@ -95,7 +95,6 @@ O.cursor = {
 				local new_line = string.gsub(line, O.cursor.from, "")
 				vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number, true, { new_line })
 				vim.api.nvim_win_set_cursor(0, { line_number, column_number - 1 })
-				return
 			end
 			line_number = line_number + 1
 		end
