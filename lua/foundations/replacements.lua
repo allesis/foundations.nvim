@@ -134,10 +134,9 @@ O.cursor = {
 }
 
 local run_neorg_command = function(command)
-	local file_extension = vim.fs.basename(vim.api.nvim_buf_get_name(0))
-	file_extension = string.match(file_extension, "%..")
+	local file_extension = string.sub(vim.fs.basename(vim.api.nvim_buf_get_name(0)), -5, -1)
 	-- Make sure this can only be run on neorg command
-	if file_extension then
+	if file_extension == ".norg" then
 		vim.cmd("Neorg " .. command)
 	end
 end
