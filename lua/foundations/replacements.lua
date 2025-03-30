@@ -81,6 +81,25 @@ M.date_with_string = {
 	end,
 }
 
+local ulimit_to = function(from)
+	local match = from or ""
+	match = string.gsub(match, "{{__ulimit__", "")
+	match = string.gsub(match, "__}}", "")
+	match = "!ulimit -" .. match
+	return string.sub(vim.api.nvim_exec2(match, { output = true }).output, string.len(match) + 5, -2)
+end
+
+-- We need two ulimit commands since luas pattern matching is a touch limited
+-- 	and N takes an arg of a number
+M.ulimit_N = {
+	from = "{{__ulimit__N[0-9]+__}}",
+	to = ulimit_to,
+}
+M.ulimit = {
+	from = "{{__ulimit__[tfdscmunlvxiqer]__}}",
+	to = ulimit_to,
+}
+
 -- Cleanup Replacements
 -- Less actual replacements and more meta tokens used to indicate where various things should be located
 O.cursor = {
