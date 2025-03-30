@@ -68,13 +68,16 @@ N.right = {
 -- Wrappers around command line functions
 -- These are just here to allow dedicated users to go to town on templates
 
+-- Allows embedding of any date command, each command is run at a different moment in time
 M.date_with_string = {
-	from = "{{__date__(.*)__}}",
-	to = function(match)
-		match = match or ""
+	from = "{{__date__[%%\\:a-zA-Z]+__}}",
+	to = function(from)
+		local match = from or ""
 		match = string.gsub(match, "{{__date__", "")
 		match = string.gsub(match, "__}}", "")
-		return vim.api.nvim_exec2('!date +"' .. match .. '"', { output = true }).output
+		match = '!date +"' .. match .. '"'
+		local res = string.sub(vim.api.nvim_exec2(match, { output = true }).output, string.len(match) + 4, -2)
+		return res
 	end,
 }
 return { M, N, O }
