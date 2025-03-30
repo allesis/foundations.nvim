@@ -19,7 +19,7 @@ vim.api.nvim_create_user_command("Foundations", function(opts)
 	for token in string.gmatch(opts.args, "[^%s]+") do
 		table.insert(args, token)
 	end
-	commands_functions[args[1]](args[2], opts)
+	commands_functions[args[1]](opts)
 end, {
 	nargs = 1,
 	complete = function(ArgLead, CmdLine, CursorPos)
