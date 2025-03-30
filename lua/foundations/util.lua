@@ -129,6 +129,11 @@ end
 -- Writes the value of contents to a new file at file_path
 -- returns the number of bytes written
 M.write_file = function(file_path, contents)
+	local filetype = vim.uv.fs_stat(file_path).type
+	assert(
+		filetype == "file",
+		"\nFoundations.nvim tried to write to something other than a file!\nDid you forget to enter a file name?"
+	)
 	local fd = assert(vim.uv.fs_open(file_path, "w", 438))
 	local bytes = assert(vim.uv.fs_write(fd, contents, 0))
 	assert(vim.uv.fs_close(fd))
