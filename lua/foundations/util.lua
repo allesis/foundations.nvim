@@ -155,6 +155,7 @@ M.file_from_template = function(template_path, file_path)
 	-- 	 It's gotten better own its own for some reason but is still slow
 	-- FIX:  Make this faster. Waiting a half second for a file to open is annoying
 	vim.cmd.e(file_path)
+	vim.cmd.w()
 	M.do_cleanup()
 end
 
