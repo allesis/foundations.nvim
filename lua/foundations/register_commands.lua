@@ -1,12 +1,14 @@
 local commands = require("foundations.commands")
 local command_names = {
 	"from_template",
+	"from_template_with_path",
 	"new_template",
 	"edit_template",
 }
 local commands_functions = {
-	["new_template"] = commands.new_template,
 	["from_template"] = commands.from_template,
+	["from_template_with_path"] = commands.from_template_with_path,
+	["new_template"] = commands.new_template,
 	["edit_template"] = commands.edit_template,
 }
 
