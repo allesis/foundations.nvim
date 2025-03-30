@@ -16,7 +16,8 @@ M._configs = {
 		vim.cmd.intro()
 	end,
 	markers = {},
-	-- Valid strategies are: all, markers, git, lsp
+	-- Valid strategies are: all, marker, git, lsp, none
+	-- If `all` is used, order is LSP, git, markers, none
 	root_strategy = "all",
 }
 M.config = function(config)
