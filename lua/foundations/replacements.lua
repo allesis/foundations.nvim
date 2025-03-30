@@ -126,4 +126,30 @@ O.cursor = {
 	end,
 }
 
+local run_neorg_command = function(command)
+	local file_extension = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+	file_extension = string.match(file_extension, "%..")
+	-- Make sure this can only be run on neorg command
+	if file_extension then
+		vim.cmd("Neorg " .. command)
+	end
+end
+
+O.neorg_inject_metadata = {
+	from = "{{__neorg__inject__metadata__}}",
+	to = function()
+		perform_replacement(O.neorg_inject_metadata.from, function()
+			run_neorg_command("inject-metadata")
+		end)
+	end,
+}
+O.neorg_tangle = {
+	from = "{{__neorg__tangle__}}",
+	to = function()
+		perform_replacement(O.neorg_inject_metadata.from, function()
+			run_neorg_command("tangle current-file")
+		end)
+	end,
+}
+
 return { M, N, O }
