@@ -102,21 +102,28 @@ M.ulimit = {
 
 -- Cleanup Replacements
 -- Less actual replacements and more meta tokens used to indicate where various things should be located
+local perform_replacement = function(from, replace_function)
+	local bufnr = vim.api.nvim_get_current_buf()
+	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+	local line_number = 1
+	for _, line in pairs(lines) do
+		local column_number = string.find(line, from)
+		if column_number then
+			local new_line = string.gsub(line, from, "")
+			replace_function(new_line)
+		end
+		line_number = line_number + 1
+	end
+end
+local cursor = function(new_line)
+	vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number, true, { new_line })
+	vim.api.nvim_win_set_cursor(0, { line_number, column_number - 1 })
+end
 O.cursor = {
 	from = "{{__cursor__}}",
 	to = function()
-		local bufnr = vim.api.nvim_get_current_buf()
-		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-		local line_number = 1
-		for _, line in pairs(lines) do
-			local column_number = string.find(line, O.cursor.from)
-			if column_number then
-				local new_line = string.gsub(line, O.cursor.from, "")
-				vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number, true, { new_line })
-				vim.api.nvim_win_set_cursor(0, { line_number, column_number - 1 })
-			end
-			line_number = line_number + 1
-		end
+		perform_replacement(O.cursor.from, cursor)
 	end,
 }
+
 return { M, N, O }
