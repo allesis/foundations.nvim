@@ -8,7 +8,9 @@ M.date = {
 	from = "{{__date__}}",
 	to = function(match)
 		local res = vim.api.nvim_exec2("!date", { output = true }).output
-		return res
+		-- !date returns a string with a bunch of garbage surrounding the actual date
+		-- This strips the garbage
+		return string.sub(res, 10, -2)
 	end,
 }
 
