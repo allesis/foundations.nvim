@@ -31,8 +31,8 @@ M.path = {
 	from = "{{__path__}}",
 	to = function(match)
 		local path = vim.api.nvim_buf_get_name(0)
+		return path
 	end,
-	post_create = true,
 }
 M.name = {
 	from = "{{__name__}}",
