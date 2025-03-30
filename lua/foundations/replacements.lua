@@ -1,6 +1,7 @@
-local M = {} -- Replacements
+local M = {} -- Replacements, Most all replacements should go here
 local N = {} -- Post Replacements, done last
 local O = {} -- Final Replacements, for cleanup and user positioning
+local P = {} -- Pre Replacements, done first
 
 -- Basic Replacements
 -- Commonly used
@@ -222,4 +223,4 @@ O.neorg_tangle_pick_file = {
 	end,
 }
 
-return { M, N, O }
+return { M, N, O, P }

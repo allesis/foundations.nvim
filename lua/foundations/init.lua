@@ -7,6 +7,7 @@ local M = {}
 local replacements = require("foundations.replacements")
 M._configs = {
 	path = "~/.config/nvim/templates",
+	pre_replacements = replacements[4],
 	replacements = replacements[1],
 	post_replacements = replacements[2],
 	cleanup_replacements = replacements[3],
