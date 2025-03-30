@@ -1,4 +1,6 @@
-local M = {}
+local M = {} -- Replacements
+local N = {} -- Post Replacements, done last
+local O = {} -- Final Replacements, for cleanup and user positioning
 
 -- Basic Replacements
 -- Commonly used
@@ -44,24 +46,23 @@ M.name = {
 -- Really unlikely to be used,
 -- but you never know
 
---[[
 -- These two are here entirely to allow entering the template strings directly into a template without replacement
 -- So {{__left__}}some_template_string{{__right__}}
 -- will become {{__some_template_string__}} after replacements have been made
-M.left = {
+N.left = {
 	from = "{{__left__}}",
 	to = function(match)
 		return "{{__"
 	end,
 }
 
-M.right = {
+N.right = {
 	from = "{{__right__}}",
 	to = function(match)
 		return "__}}"
 	end,
 }
---]]
+--
 -- Wrappers around command line functions
 -- These are just here to allow dedicated users to go to town on templates
 
@@ -74,4 +75,4 @@ M.date_with_string = {
 		return vim.api.nvim_exec2('!date +"' .. match .. '"', { output = true }).output
 	end,
 }
-return M
+return { M, N, O }

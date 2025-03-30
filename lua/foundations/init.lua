@@ -5,9 +5,12 @@ local M = {}
 --	Need to be of the form of template_spec
 --]]
 M._templates = {}
+local replacements = require("foundations.replacements")
 M._configs = {
 	path = "~/.config/nvim/templates",
-	replacements = require("foundations.replacements"),
+	replacements = replacements[1],
+	post_replacements = replacements[2],
+	cleanup_replacements = replacements[3],
 	-- TODO: Add options to use startify and dashboard
 	intro = function()
 		vim.cmd.intro()

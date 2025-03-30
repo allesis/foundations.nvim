@@ -140,6 +140,7 @@ M.file_from_template = function(template_path, file_path)
 	template_path = vim.fs.normalize(template_path)
 	file_path = vim.fs.normalize(file_path)
 	local contents = M.read_file(template_path)
+	vim.cmd.e(file_path)
 	contents = M.replace_standins(contents)
 	M.write_file(file_path, contents)
 	-- PERF: This edit is very slow for no reason
@@ -147,6 +148,7 @@ M.file_from_template = function(template_path, file_path)
 	-- 	 It's gotten better own its own for some reason but is still slow
 	-- FIX:  Make this faster. Waiting a half second for a file to open is annoying
 	vim.cmd.e(file_path)
+	M.do_cleanup()
 end
 
 M.apply_replacements = function(file_path) end
@@ -155,16 +157,13 @@ M.apply_replacements = function(file_path) end
 -- Order of operations is determined by priority
 -- {{__cursor__}} is always processed last
 M.replace_standins = function(contents)
-	local replacements = require("foundations")._configs.replacements
+	local replacements = require("foundations")._configs.replacements or {}
 	for _, replace_spec in pairs(replacements) do
-		local post_create = replace_spec.post_create or false
-		if not post_create then
-			local from = string.match(contents, replace_spec.from)
-			if from then
-				local to = replace_spec.to(from)
-				contents = string.gsub(contents, from, to)
-			end
-		end
+		contents = string.gsub(contents, replace_spec.from, replace_spec.to)
+	end
+	local post_replacements = require("foundations")._configs.post_replacements or {}
+	for _, replace_spec in pairs(post_replacements) do
+		contents = string.gsub(contents, replace_spec.from, replace_spec.to)
 	end
 	return contents
 end
@@ -191,4 +190,12 @@ M.get_project_root = function(path)
 	end
 	return vim.fs.dirname(path)
 end
+
+M.do_cleanup = function()
+	local cleanup_replacements = require("foundations")._configs.cleanup_replacements or {}
+	for _, replace_spec in pairs(cleanup_replacements) do
+		replace_spec.to()
+	end
+end
+
 return M
