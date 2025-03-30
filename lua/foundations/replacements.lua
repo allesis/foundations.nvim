@@ -20,6 +20,62 @@ M.simple_date = {
 		return string.sub(res, 16, -2)
 	end,
 }
+M.day = {
+	from = "{{__day__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%d"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.day_long = {
+	from = "{{__daylong__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%A"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.day_short = {
+	from = "{{__dayshort__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%a"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.month = {
+	from = "{{__month__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%m"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.monthlong = {
+	from = "{{__monthlong__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%B"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.month_short = {
+	from = "{{__monthshort__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%b"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.time = {
+	from = "{{__time__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%r"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
+M.year = {
+	from = "{{__year__}}",
+	to = function()
+		local res = vim.api.nvim_exec2('!date +"\\%Y"', { output = true }).output
+		return string.sub(res, 16, -2)
+	end,
+}
 
 M.title = {
 	from = "{{__title__}}",
@@ -28,8 +84,8 @@ M.title = {
 	end,
 	post_create = true,
 }
-M.time = {
-	from = "{{__time__}}",
+M.clocktime = {
+	from = "{{__clocktime__}}",
 	to = function(match)
 		return vim.uv.clock_gettime("realtime").sec
 	end,
