@@ -115,3 +115,20 @@ opts = {
 ...
 ```
 
+## Ignore Dirs
+Some directories should be ignored by default when searching for templates (e.g. .git, .venv, etc).
+These directories can be defined using the `ignore_dirs` option.
+By default the only directory which is ignored is `.git` however more can be added by adding the following snippet to the `opts` table from the installation step.
+```lua
+...
+opts = {
+...
+    ignore_dirs = {
+        ".git",
+        ".venv",
+        ...
+    },
+...
+},
+...
+```

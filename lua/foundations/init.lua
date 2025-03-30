@@ -19,6 +19,9 @@ M._configs = {
 	-- Valid strategies are: all, marker, git, lsp, none
 	-- If `all` is used, order is LSP, git, markers, none
 	root_strategy = "all",
+	ignore_dirs = {
+		".git",
+	},
 }
 M.config = function(config)
 	if config ~= nil and config.path ~= nil then
