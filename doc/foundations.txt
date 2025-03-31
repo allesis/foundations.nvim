@@ -1,5 +1,155 @@
+*foundations.txt*	     For Neovim	          Last Changed: March 30, 2025
+*foundation* *foundations* *foundation.nvim* *foundations.nvim*
 ==============================================================================
-foundations						      *foundations.nvim*
+Foundations						      *foundations.nvim*
+
 Manages templates for both files and projects.
 
+==============================================================================
+Config							    *foundations.config*
+
+>lua
+	require("foundations").setup({
+		-- Foundations needs somewhere to store and look for templates
+		-- By default this is ~/.config/nvim/templates
+		-- Change to another directory if you want to move this
+		path = "~/.config/nvim/templates",
+		
+		-- Foundations has four types of replacements
+		-- Add custom replacements in the corosponding table
+		-- If you are unsure which table to add them too,
+		-- 	add them to replacements
+		pre_replacements = {
+			-- Custom pre-replacements go here
+		},
+		replacements = {
+			-- Custom replacements go here
+		},
+		post_replacements = {
+			-- Custom post-replacements go here
+		},
+		cleanup_replacements = {
+			-- Custom cleanup-replacements go here
+		},
+
+		-- Sometimes foundations needs to find a project's root dir
+		-- There are several strategies it can use to do this
+		-- The default is `all` but can be changed here
+		-- Valid choices are: all, lsp, git, markers, and none
+		root_strategy = "all",
+		
+		-- When using the markers strategy,
+		--	marker files must be defined
+		-- No marker files are defined by default
+		-- Add marker files here
+		markers = {
+			"cargo.toml",
+			...
+		},
+
+		-- When searching for directories and templates,
+		-- 	irrelevent directories are often found
+		-- To ignore the files and folders in those directories,
+		--	add them here
+		-- Contains only ".git" by default
+		ignore_dirs = {
+			".git",
+			...
+		},
+
+		-- When returning from editing or newly creating a template
+		--	you will be placed in your previous buffer
+		-- If no previous buffer exists you will be placed in
+		-- 	neovims intro screen
+		-- To change where you are placed specify a function
+		-- 	to be run whenever you cannot be returned to a buffer
+		intro = function()
+			vim.cmd.intro()
+		end,
+	})
+<
+
+
+==============================================================================
+Pre-Replacements				  *foundations.pre-replacements*
+
+	Pre-replacements are any replacements which should occur before any
+	other replacements take play. Uses cases for this are few and so it
+	it more included for completions sake more than anything else. They
+	follow the same structure as |foundations.replacements|.
+
+	Pre-replacements are applied just following file creation.
+
+==============================================================================
+Replacements				 	      *foundations.replacements*
+
+	Replacements are any replacement which can occur at any time. Most
+	replacements fall into this category.  A replacement is defined as
+	follow,
+>lua
+	replacement = {
+		from = "from",
+		to = function(match)
+			return "to"	
+		end,
+	}
+<
+	The from string is the string which will be matched upon, and can
+	contain any typical lua patterns.
+	The to function is a function which takes a single argument and
+	returns a string. This function will be passed the exact text which
+	was matched, not the pattern match on but the actual text which was
+	matched in the file.
+
+	Replacements are applied following |foundations.pre-replacements|.
+
+	If the replacement needs to be applied at a specific time you might
+	consider using |foundations.pre-replacements| or
+	|foundations.post-replacements|. If the replacement is meant to
+	complete a meta task, you might consider using
+	|foundations.cleanup-replacements|.
+
+==============================================================================
+Post-Replacements				 *foundations.post-replacements*
+
+	Post-Replacements are any replacement which should be performed after
+	all other replacements. Most replacements can be achieved using other
+	replacements but if a replacement must occur after all other, post-
+	replacements can be used.
+
+	Post-replacements are applied just after |foundations.replacements|.
+
+==============================================================================
+Cleanup-Replacements			      *foundations.cleanup-replacements*
+
+	Cleanup-replacments are used to accomplish meta tasks like applying
+	other editor commands or positioning the users cursor in the
+	resulting file. Unlike typical |foundation.replacements| these
+	replacements are defined as follows,
+>lua
+	cleanup_replacements = {
+		from = "from",
+		to = function()
+			metatask()
+		end,
+	}
+<
+	Users are responsible for removing the matched text manually.
+	To help with this a util method |foundations.util.perform_replacment| 
+	is provided. 
+
+==============================================================================
+Utility Functions					      *foundations.util*
+
+	Several utility functions are provided for use in various
+	replacements. An exhaustive list is provided here.
+
+perform_replacement({from}, {to})	  *foundations.util.perform_replacement*
+	Replaces the string `from` with the result of a call to `to`.
+
+	Parameters:
+		{from}	`string`
+		{to}	`function`
+
+==============================================================================
 vim:tw=78:ts=8:ft=help:norl:
