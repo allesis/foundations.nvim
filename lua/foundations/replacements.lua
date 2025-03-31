@@ -2,7 +2,7 @@ local M = {} -- Replacements, Most all replacements should go here
 local N = {} -- Post Replacements, done last
 local O = {} -- Final Replacements, for cleanup and user positioning
 local P = {} -- Pre Replacements, done first
-local perform_replacement = require("foundations.util").perperform_replacement
+local perform_replacement = require("foundations.util").perform_replacement
 
 -- Basic Replacements
 -- Commonly used
