@@ -1,1 +1,13 @@
+foundation	foundations.txt	/*foundation*
+foundation.nvim	foundations.txt	/*foundation.nvim*
+foundations	foundations.txt	/*foundations*
+foundations.cleanup-replacements	foundations.txt	/*foundations.cleanup-replacements*
+foundations.config	foundations.txt	/*foundations.config*
 foundations.nvim	foundations.txt	/*foundations.nvim*
+foundations.nvim	foundations.txt	/*foundations.nvim*
+foundations.post-replacements	foundations.txt	/*foundations.post-replacements*
+foundations.pre-replacements	foundations.txt	/*foundations.pre-replacements*
+foundations.replacements	foundations.txt	/*foundations.replacements*
+foundations.txt	foundations.txt	/*foundations.txt*
+foundations.util	foundations.txt	/*foundations.util*
+foundations.util.perform_replacement	foundations.txt	/*foundations.util.perform_replacement*

@@ -1,7 +1,6 @@
 *foundations.txt*	     For Neovim	          Last Changed: March 30, 2025
-*foundation* *foundations* *foundation.nvim* *foundations.nvim*
 ==============================================================================
-Foundations						      *foundations.nvim*
+Foundations	       *foundation* *foundations* *foundation.nvim* *foundations.nvim
 
 Manages templates for both files and projects.
 
