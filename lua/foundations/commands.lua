@@ -141,17 +141,6 @@ M.from_template = function(opts)
 			attach_mappings = function(prompt_bufnr, map)
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
-					-- We are reusing the code in new_template to get us a valid file path
-					-- 	without immedietly switching to it and closing it on save
-					-- We do this by overloading the callback function it calls
-					-- 	and spoofing some options
-					-- The variable names are a bit confusing since the called function
-					-- 	is not doing what the variable names would imply
-					-- Here opts.from_template_path is the actual full template path
-					-- In the callback, template_path is the file_path
-					-- 	and file_namthe e is the file name
-					-- HACK: This is a bad way to do things, either rename things
-					-- 		to make it less confusing, or make the code less confusing
 					local template_path = action_state.get_selected_entry().value
 					opts.template_path = template_path
 					opts.title = "New File Name"
