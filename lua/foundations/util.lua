@@ -165,6 +165,10 @@ M.apply_replacements = function(file_path) end
 -- Order of operations is determined by priority
 -- {{__cursor__}} is always processed last
 M.replace_standins = function(contents)
+	local pre_replacements = require("foundations")._configs.pre_replacements or {}
+	for _, replace_spec in pairs(pre_replacements) do
+		contents = string.gsub(contents, replace_spec.from, replace_spec.to)
+	end
 	local replacements = require("foundations")._configs.replacements or {}
 	for _, replace_spec in pairs(replacements) do
 		contents = string.gsub(contents, replace_spec.from, replace_spec.to)
