@@ -7,5 +7,3 @@ foundations.post-replacements	foundations.txt	/*foundations.post-replacements*
 foundations.pre-replacements	foundations.txt	/*foundations.pre-replacements*
 foundations.replacements	foundations.txt	/*foundations.replacements*
 foundations.txt	foundations.txt	/*foundations.txt*
-foundations.util	foundations.txt	/*foundations.util*
-foundations.util.perform_replacement	foundations.txt	/*foundations.util.perform_replacement*

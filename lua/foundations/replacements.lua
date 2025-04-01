@@ -104,6 +104,15 @@ M.clocktime = {
 		return vim.uv.clock_gettime("realtime").sec
 	end,
 }
+M.parentdir = {
+	from = "{{__parentdir__}}",
+	to = function(match)
+		local path = vim.api.nvim_buf_get_name(0)
+		local parentdir = vim.fs.dirname(path)
+		parentdir = string.gsub(parentdir, "/([^/]/)*", "")
+		return parentdir
+	end,
+}
 M.path = {
 	from = "{{__path__}}",
 	to = function(match)
@@ -119,7 +128,7 @@ M.name = {
 }
 
 M.season = {
-	from = "{{__schoolseason__}}",
+	from = "{{__season__}}",
 	to = function()
 		local seasons = {
 			"Winter",
