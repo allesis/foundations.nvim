@@ -2,7 +2,8 @@ local M = {} -- Replacements, Most all replacements should go here
 local N = {} -- Post Replacements, done last
 local O = {} -- Final Replacements, for cleanup and user positioning
 local P = {} -- Pre Replacements, done first
-M.perform_replacement = function(from, replace_function)
+
+local perform_replacement = function(from, replace_function)
 	local bufnr = vim.api.nvim_get_current_buf()
 	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 	local line_number = 1
@@ -15,7 +16,6 @@ M.perform_replacement = function(from, replace_function)
 		line_number = line_number + 1
 	end
 end
-
 -- Basic Replacements
 -- Commonly used
 M.date = {
@@ -118,6 +118,28 @@ M.name = {
 	end,
 }
 
+M.season = {
+	from = "{{__schoolseason__}}",
+	to = function()
+		local seasons = {
+			"Winter",
+			"Winter",
+			"Spring",
+			"Spring",
+			"Spring",
+			"Summer",
+			"Summer",
+			"Summer",
+			"Fall",
+			"Fall",
+			"Fall",
+			"Winter",
+		}
+		local numeric_season = string.sub(vim.api.nvim_exec2('!date +"\\%m"', { output = true }).output, -16, 2)
+		return seasons[numeric_season]
+	end,
+}
+
 -- Advanced replacements
 -- These use lua magic and do useful things
 
@@ -186,7 +208,7 @@ end
 O.cursor = {
 	from = "{{__cursor__}}",
 	to = function()
-		M.perform_replacement(O.cursor.from, cursor)
+		perform_replacement(O.cursor.from, cursor)
 	end,
 }
 
@@ -201,7 +223,7 @@ end
 O.neorg_inject_metadata = {
 	from = "{{__neorg__inject__metadata__}}",
 	to = function()
-		M.perform_replacement(O.neorg_inject_metadata.from, function()
+		perform_replacement(O.neorg_inject_metadata.from, function()
 			run_neorg_command("inject-metadata")
 		end)
 	end,
@@ -209,7 +231,7 @@ O.neorg_inject_metadata = {
 O.neorg_tangle = {
 	from = "{{__neorg__tangle__}}",
 	to = function()
-		M.perform_replacement(O.neorg_inject_metadata.from, function()
+		perform_replacement(O.neorg_inject_metadata.from, function()
 			run_neorg_command("tangle current-file")
 		end)
 	end,
@@ -217,7 +239,7 @@ O.neorg_tangle = {
 O.neorg_tangle_pick_file = {
 	from = "{{__neorg__tangle__pick__file__}}",
 	to = function()
-		M.perform_replacement(O.neorg_inject_metadata.from, function()
+		perform_replacement(O.neorg_inject_metadata.from, function()
 			run_neorg_command("tangle")
 		end)
 	end,

@@ -134,21 +134,6 @@ Cleanup-Replacements			      *foundations.cleanup-replacements*
 	}
 <
 	Users are responsible for removing the matched text manually.
-	To help with this a util method |foundations.util.perform_replacment| 
-	is provided. 
-
-==============================================================================
-Utility Functions					      *foundations.util*
-
-	Several utility functions are provided for use in various
-	replacements. An exhaustive list is provided here.
-
-perform_replacement({from}, {to})	  *foundations.util.perform_replacement*
-	Replaces the string `from` with the result of a call to `to`.
-
-	Parameters:
-		{from}	`string`
-		{to}	`function`
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:
