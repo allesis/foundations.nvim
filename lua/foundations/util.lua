@@ -149,17 +149,16 @@ M.file_from_template = function(template_path, file_path)
 	local contents = M.read_file(template_path)
 	vim.cmd.e(file_path)
 	contents = M.replace_standins(contents)
+	vim.cmd("bd!")
 	M.write_file(file_path, contents)
 	-- PERF: This edit is very slow for no reason
 	-- 	 I've tried profiling a bit but no obvious reasons for bad perf
 	-- 	 It's gotten better own its own for some reason but is still slow
 	-- FIX:  Make this faster. Waiting a half second for a file to open is annoying
 	vim.cmd.e(file_path)
-	vim.cmd.w()
 	M.do_cleanup()
+	vim.cmd("startinsert")
 end
-
-M.apply_replacements = function(file_path) end
 
 -- Replaces all registered standins in contents with the result of calling their associated function
 -- Order of operations is determined by priority
