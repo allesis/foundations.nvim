@@ -3,19 +3,6 @@ local N = {} -- Post Replacements, done last
 local O = {} -- Final Replacements, for cleanup and user positioning
 local P = {} -- Pre Replacements, done first
 
-local perform_replacement = function(from, replace_function)
-	local bufnr = vim.api.nvim_get_current_buf()
-	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-	local line_number = 1
-	for _, line in pairs(lines) do
-		local column_number = string.find(line, from)
-		if column_number then
-			local new_line = string.gsub(line, from, "")
-			replace_function(new_line)
-		end
-		line_number = line_number + 1
-	end
-end
 -- Basic Replacements
 -- Commonly used
 M.date = {
@@ -91,10 +78,18 @@ M.year = {
 	end,
 }
 
+M.filename = {
+	from = "{{__filename__}}",
+	to = function(match)
+		return vim.fs.basename(vim.api.nvim_buf_get_name(0))
+	end,
+	post_create = true,
+}
 M.title = {
 	from = "{{__title__}}",
 	to = function(match)
-		return vim.fs.basename(vim.api.nvim_buf_get_name(0))
+		local filename = vim.fs.basename(vim.api.nvim_buf_get_name(0))
+		return string.match(filename, "^(.-)%.") or filename
 	end,
 	post_create = true,
 }
@@ -210,47 +205,21 @@ M.ulimit = {
 
 -- Cleanup Replacements
 -- Less actual replacements and more meta tokens used to indicate where various things should be located
-local cursor = function(new_line)
-	vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number, true, { new_line })
-	vim.api.nvim_win_set_cursor(0, { line_number, column_number - 1 })
-end
 O.cursor = {
 	from = "{{__cursor__}}",
 	to = function()
-		perform_replacement(O.cursor.from, cursor)
-	end,
-}
-
-local run_neorg_command = function(command)
-	local file_extension = string.sub(vim.fs.basename(vim.api.nvim_buf_get_name(0)), -5, -1)
-	-- Make sure this can only be run on neorg command
-	if file_extension == ".norg" then
-		vim.cmd("Neorg " .. command)
-	end
-end
-
-O.neorg_inject_metadata = {
-	from = "{{__neorg__inject__metadata__}}",
-	to = function()
-		perform_replacement(O.neorg_inject_metadata.from, function()
-			run_neorg_command("inject-metadata")
-		end)
-	end,
-}
-O.neorg_tangle = {
-	from = "{{__neorg__tangle__}}",
-	to = function()
-		perform_replacement(O.neorg_inject_metadata.from, function()
-			run_neorg_command("tangle current-file")
-		end)
-	end,
-}
-O.neorg_tangle_pick_file = {
-	from = "{{__neorg__tangle__pick__file__}}",
-	to = function()
-		perform_replacement(O.neorg_inject_metadata.from, function()
-			run_neorg_command("tangle")
-		end)
+		local bufnr = vim.api.nvim_get_current_buf()
+		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+		local line_number = 1
+		for _, line in pairs(lines) do
+			local column_number = string.find(line, "{{__cursor__}}")
+			if column_number then
+				local new_line = string.gsub(line, "{{__cursor__}}", "")
+				vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number, true, { new_line })
+				vim.api.nvim_win_set_cursor(0, { line_number, column_number - 1 })
+			end
+			line_number = line_number + 1
+		end
 	end,
 }
 
