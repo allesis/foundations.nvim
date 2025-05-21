@@ -61,8 +61,15 @@ M.get_dirs = function(path)
 		if vim.tbl_contains(ignore_dirs, entry) then
 			goto continue
 		end
+		if entry == nil or entry[1] == "." then
+			goto continue
+		end
 		local entry_path = path .. "/" .. entry
-		local filetype = vim.uv.fs_stat(vim.fs.normalize(entry_path)).type
+		local file = vim.uv.fs_stat(vim.fs.normalize(entry_path))
+		local filetype = nil
+		if file ~= nil then
+			filetype = file.type
+		end
 		if filetype == "directory" then
 			for _, subdir in pairs(M.get_dirs(entry_path)) do
 				table.insert(dirs, subdir)
